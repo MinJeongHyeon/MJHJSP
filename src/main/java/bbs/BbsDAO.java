@@ -12,125 +12,142 @@ import java.util.ArrayList;
 import jdbc.Jdbc;
 
 public class BbsDAO {
-	private Connection conn = null;
-	
-	
-	public BbsDAO() {
-		try {
-			conn = Jdbc.getConnection();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
+
 	public String getDate() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String SQL = "SELECT TO_CHAR(SYSDATE, 'yy.mm.dd HH24:MI') FROM DUAL";
 		String result = null;
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
-			ResultSet rs = pstmt.executeQuery();
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				result = rs.getString(1);
 			} else
 				result = "";
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
 				if (conn != null)
 					conn.close();
+				if (rs != null)
+					rs.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return result;
 	}
 	
 	public int getNext() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String SQL = "SELECT BBSID FROM BBS ORDER BY BBSID DESC";
 		int result = -1;
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
-			ResultSet rs = pstmt.executeQuery();
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				result = rs.getInt(1) + 1;
 			} else
 				result = 1;
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
 				if (conn != null)
 					conn.close();
+				if (rs != null)
+					rs.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return result; 
 	}
 	
 	public int getTotal() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String SQL = "select count(*) from bbs where bbsavailable = 1";
 		int result = -1;
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
-			ResultSet rs = pstmt.executeQuery();
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
+			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				result = rs.getInt(1);
 			} else
 				result = 0;
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
 				if (conn != null)
 					conn.close();
+				if (rs != null)
+					rs.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return result; 
 	}
 	
 	public int getTotal(String option, String word) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String SQL = "select count(*) from bbs where bbsavailable = 1 and " + option + " like ?";
 		int result = -1;
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
 			pstmt.setString(1, "%" + word + "%");
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				result = rs.getInt(1);
 			} else
 				result = 0;
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
 				if (conn != null)
 					conn.close();
+				if (rs != null)
+					rs.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return result;
 	}
 	
 	public int write(String bbsTitle, String userID, String bbsContent) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 		String SQL = "INSERT INTO BBS (BBSID, BBSTITLE, USERID, BBSDATE, BBSCONTENT, BBSAVAILABLE) VALUES (?, ?, ?, ?, ?, ?)";
 		int num = (int) getNext();
 		String str = (String) getDate();
 		int result = -1;
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
 			pstmt.setInt(1, num);
 			pstmt.setString(2, bbsTitle);
 			pstmt.setString(3, userID);
@@ -140,7 +157,7 @@ public class BbsDAO {
 			result = pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
@@ -149,22 +166,26 @@ public class BbsDAO {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return result;
 	}
 	
 	public ArrayList<Bbs> getList(int pageNumber, int bunch) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String SQL = "SELECT * FROM (SELECT bbsid, bbstitle, userid, bbsdate, bbscontent, bbsavailable, ROW_NUMBER() OVER(ORDER BY BBSID DESC) rn FROM BBS WHERE BBSAVAILABLE = 1) WHERE ? <= rn and rn <= ?";
 		ArrayList<Bbs> list = new ArrayList<Bbs>();
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
 			pstmt.setInt(1, 1 + (pageNumber - 1) * bunch);
 			if (getTotal() < pageNumber * bunch){
 				pstmt.setInt(2, getTotal());
 			} else {
 				pstmt.setInt(2, pageNumber * bunch);
 			}
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				Bbs bbs = new Bbs();
 				bbs.setBbsID(rs.getInt(1));
@@ -177,32 +198,38 @@ public class BbsDAO {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
 				if (conn != null)
 					conn.close();
+				if (rs != null)
+					rs.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return list;
 	}
 	
 	public ArrayList<Bbs> getList(String option, String word, int pageNumber, int bunch) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String SQL = "SELECT * FROM (SELECT bbsid, bbstitle, userid, bbsdate, bbscontent, bbsavailable, ROW_NUMBER() OVER(ORDER BY BBSID DESC) rn FROM BBS WHERE BBSAVAILABLE = 1 and "
 				+ option + " like ?) WHERE ? <= rn and rn <= ?";
 		ArrayList<Bbs> list = new ArrayList<Bbs>();
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
 			pstmt.setString(1, "%" + word + "%");
 			pstmt.setInt(2, 1 + (pageNumber - 1) * bunch);
 			if (getTotal(option, word) < pageNumber * bunch)
 				pstmt.setInt(3, getTotal(option, word));
 			else
 				pstmt.setInt(3, pageNumber * bunch);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				Bbs bbs = new Bbs();
 				bbs.setBbsID(rs.getInt(1));
@@ -215,16 +242,18 @@ public class BbsDAO {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
 				if (conn != null)
 					conn.close();
+				if (rs != null)
+					rs.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return list;
 	}
 	
@@ -244,12 +273,16 @@ public class BbsDAO {
 	}
 	
 	public Bbs getBbs(int bbsID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		String SQL = "SELECT * FROM BBS WHERE BBSID = ?";
 		Bbs bbs = null;
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
 			pstmt.setInt(1, bbsID); 
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				bbs = new Bbs();
 				bbs.setBbsID(rs.getInt(1));
@@ -261,31 +294,36 @@ public class BbsDAO {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
 				if (conn != null)
 					conn.close();
+				if (rs != null)
+					rs.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return bbs;
 	}
 	
 	public int update(int bbsID, String bbsTitle, String bbsContent) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 		String SQL = "UPDATE BBS SET BBSTITLE = ?, BBSCONTENT = ? WHERE BBSID = ?";
 		int result = -1;
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
 			pstmt.setString(1, bbsTitle);
 			pstmt.setString(2, bbsContent);
 			pstmt.setInt(3, bbsID);
 			result = pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
@@ -294,20 +332,23 @@ public class BbsDAO {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return result;
 	}
 	
 	public int delete(int bbsID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 		String SQL = "UPDATE BBS SET BBSAVAILABLE = 0 WHERE BBSID = ?";
 		int result = -1;
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			conn = Jdbc.getConnection();
+			pstmt = conn.prepareStatement(SQL);
 			pstmt.setInt(1, bbsID);
 			result = pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
-		} /*finally {
+		} finally {
 			try {
 				if (pstmt != null)
 					pstmt.close();
@@ -316,7 +357,7 @@ public class BbsDAO {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 		return result;
 	}
 }
