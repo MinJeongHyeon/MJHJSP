@@ -1,0 +1,29 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device, initial-scale=1">
+<link rel="stylesheet" href="css/bootstrap.css">
+<title>JSP 게시판 웹 사이트</title>
+</head>
+<body>
+	<% 
+		String userID = null;
+		if (session.getAttribute("userID") != null) {
+			userID = (String)session.getAttribute("userID");
+		}
+	%>
+	<jsp:include page="top.jsp" flush="false"/>
+	<div class="container">
+		<div class="jumbotron">
+			<h1>게시판 사이트 연습</h1>
+			<p>민정현의 게시판 기능 연습 (JSP, Java, JavaScript, BootStrap, Oracle)</p>
+			<p><a class="btn btn-primary btn-pull" href="#" role="button">버튼</a></p>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+</body>
+</html>
