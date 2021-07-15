@@ -55,7 +55,7 @@ a, a:hover {
 		if (request.getParameter("startDate") != null) {
 			startDate = request.getParameter("startDate");
 		}
-		String endDate= new SimpleDateFormat("YY.MM.dd").format(new Date());
+		String endDate= new SimpleDateFormat("YY.MM.DD").format(new Date());
 		if (request.getParameter("endDate") != null) {
 			endDate = request.getParameter("endDate");
 		}

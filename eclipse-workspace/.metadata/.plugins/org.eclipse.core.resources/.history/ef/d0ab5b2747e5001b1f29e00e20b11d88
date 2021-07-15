@@ -35,7 +35,7 @@
 		if (result == 1) {
 			session.setAttribute("userID", user.getUserID());
 			script.println("<script>");
-			script.println("location.href = 'main.jsp'");
+			script.println("history.back()");
 			script.println("</script>");	
 		}
 		// 비밀번호 오류

@@ -55,7 +55,7 @@ a, a:hover {
 		if (request.getParameter("startDate") != null) {
 			startDate = request.getParameter("startDate");
 		}
-		String endDate= new SimpleDateFormat("YY.MM.DD").format(new Date());
+		String endDate= new SimpleDateFormat("YY.MM.dd").format(new Date());
 		if (request.getParameter("endDate") != null) {
 			endDate = request.getParameter("endDate");
 		}
@@ -192,7 +192,7 @@ $(document).ready(function () {
 				<input type="hidden" name="searchOption" id="searchOption" value="bbsTitle" />
 				<input type="hidden" name="dateOption" id="dateOption" value="all" />
 				<input type="hidden" name="startDate" id="startDateValue" value="<%=startDate%>"/>
-				<input type="hidden" name="endDate" id="endDateValue" />
+				<input type="hidden" name="endDate" id="endDateValue" value="<%=endDate%>" />
 				<input type="hidden" name="searchWord" id="searchWord" 
 				<%if (searchWord != null) { %>
 				value="<%=searchWord%>" /> <%} %>
@@ -216,7 +216,7 @@ $(document).ready(function () {
 										<p style="margin:0px 10px; display:inline;">검색 기간</p>
 										<input type="text" id="startDate" style="width:90px; margin:0px 5px;" value="00.01.01" />
 										<p style="line-height:20px; display:inline;">~</p>
-										<input type="text" id="endDate" style="width:90px; margin:0px 5px;" />
+										<input type="text" id="endDate" style="width:90px; margin:0px 5px;" value="<%=endDate%>"/>
 									</li>
 									<li class="divider"></li>
 									<li><a onClick="javascript:applyDate(this, 'all')">전체 기간</a></li>
