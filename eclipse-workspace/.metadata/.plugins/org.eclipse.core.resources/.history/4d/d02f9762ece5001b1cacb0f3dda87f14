@@ -317,7 +317,7 @@ $(document).ready(function () {
 					<th style="background-color: #eeeeee; text-align: center; width: 50px;">번호</th>
 					<th style="background-color: #eeeeee; text-align: center;">제목
 					<% if(sort.equals("BBSTITLE")) {%>
-						<a onClick="javascript:sort('BBSTITLE DESC')"><span class="glyphicon glyphicon-chevron-up"></span></a>
+						<a onClick="javascript:sort('BBSTITLE')"><span class="glyphicon glyphicon-chevron-up"></span></a>
 					<% } else {%>
 						<a onClick="javascript:sort('BBSTITLE')"><span class="glyphicon glyphicon-chevron-down"></span></a>
 					<%} %>

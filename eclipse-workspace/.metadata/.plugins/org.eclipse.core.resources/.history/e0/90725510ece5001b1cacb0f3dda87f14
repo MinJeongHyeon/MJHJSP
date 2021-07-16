@@ -122,8 +122,8 @@ function bunchView(bunch){
 }
 
 // 정렬 버튼
-function sort(sortString){
-	$('#sort').val(sortString);
+function sort(num){
+	$('#sortNumber').val(num);
 	document.getElementById('viewForm').submit();
 	return false;
 }
@@ -316,24 +316,24 @@ $(document).ready(function () {
 				<tr>
 					<th style="background-color: #eeeeee; text-align: center; width: 50px;">번호</th>
 					<th style="background-color: #eeeeee; text-align: center;">제목
-					<% if(sort.equals("BBSTITLE")) {%>
-						<a onClick="javascript:sort('BBSTITLE DESC')"><span class="glyphicon glyphicon-chevron-up"></span></a>
+					<% if(sort.equals("BBSDATE")) {%>
+						<a onClick="javascript:sort('BBSDATE')"><span class="glyphicon glyphicon-chevron-up"></span></a>
 					<% } else {%>
-						<a onClick="javascript:sort('BBSTITLE')"><span class="glyphicon glyphicon-chevron-down"></span></a>
+						<a onClick="javascript:sort('BBSDATE DESC')"><span class="glyphicon glyphicon-chevron-down"></span></a>
 					<%} %>
 					</th>
 					<th style="background-color: #eeeeee; text-align: center; width: 80px;">작성자
-					<% if(sort.equals("USERID")) {%>
-						<a onClick="javascript:sort('USERID DESC')"><span class="glyphicon glyphicon-chevron-up"></span></a>
+					<% if(sort == 3) {%>
+						<a onClick="javascript:sort(4)"><span class="glyphicon glyphicon-chevron-up"></span></a>
 					<% } else {%>
-						<a onClick="javascript:sort('USERID')"><span class="glyphicon glyphicon-chevron-down"></span></a>
+						<a onClick="javascript:sort(3)"><span class="glyphicon glyphicon-chevron-down"></span></a>
 					<%} %>
 					</th>
 					<th style="background-color: #eeeeee; text-align: center; width: 250px;">작성일자
-					<% if(sort.equals("BBSDATE")) {%>
-						<a onClick="javascript:sort('BBSDATE DESC')"><span class="glyphicon glyphicon-chevron-up"></span></a>
+					<% if(sort == 5) {%>
+						<a onClick="javascript:sort(6)"><span class="glyphicon glyphicon-chevron-up"></span></a>
 					<% } else {%>
-						<a onClick="javascript:sort('BBSDATE')"><span class="glyphicon glyphicon-chevron-down"></span></a>
+						<a onClick="javascript:sort(5)"><span class="glyphicon glyphicon-chevron-down"></span></a>
 					<%} %>
 					</th>
 				</tr>

@@ -206,7 +206,7 @@ public class BbsDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String SQL = "SELECT * FROM (SELECT bbsid, bbstitle, userid, bbsdate, bbscontent, bbsavailable, "
-				+ "ROW_NUMBER() OVER(ORDER BY " + sort + ") rn FROM BBS "
+				+ "ROW_NUMBER() OVER(ORDER BY " + sort + "") rn FROM BBS "
 				+ "WHERE BBSAVAILABLE = 1 and " + option + " like ? "
 				+ "and to_date(?, 'YY.MM.DD') <= bbsdate and "
 				+ "bbsdate < to_date(?, 'YY.MM.DD')+1) "
