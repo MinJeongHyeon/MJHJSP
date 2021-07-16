@@ -8,42 +8,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import jdbc.Jdbc;
 
 public class BbsDAO {
 
+	// 현재 날짜를 리턴하는 메소드
 	public String getDate() {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String SQL = "SELECT TO_CHAR(SYSDATE, 'yy.mm.dd HH24:MI') FROM DUAL";
-		String result = null;
-		try {
-			conn = Jdbc.getConnection();
-			pstmt = conn.prepareStatement(SQL);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				result = rs.getString(1);
-			} else
-				result = "";
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-				if (rs != null)
-					rs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		String result = new SimpleDateFormat("YY.MM.dd HH:mm").format(new Date());
 		return result;
 	}
 	
+	// 가장 최근 게시글 다음의 BBSID를 리텬
 	public int getNext() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -75,6 +52,7 @@ public class BbsDAO {
 		return result; 
 	}
 	
+	// 삭제되지 않은 게시글의 총합을 리턴
 	public int getTotal() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -106,6 +84,7 @@ public class BbsDAO {
 		return result; 
 	}
 	
+	// 삭제되지 않고 검색 조건에 만족하는 게시글의 총합 리턴
 	public int getTotal(String option, String word, String startDate, String endDate) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -142,6 +121,7 @@ public class BbsDAO {
 		return result;
 	}
 	
+	// 게시글 작성 후 실행 결과값 리턴
 	public int write(String bbsTitle, String userID, String bbsContent) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -174,6 +154,7 @@ public class BbsDAO {
 		return result;
 	}
 	
+	// 페이지 구성을 위한 ArrayList 리턴
 	public ArrayList<Bbs> getList(int pageNumber, int bunch) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -217,6 +198,7 @@ public class BbsDAO {
 		return list;
 	}
 	
+	// 검색 조건에 맞는 페이지 구성을 위한 ArrayList 리턴
 	public ArrayList<Bbs> getList(String option, String word, int pageNumber, int bunch, String startDate, String endDate) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -267,6 +249,7 @@ public class BbsDAO {
 		return list;
 	}
 	
+	// pageNumber의 다음 페이지가 존재하는지 리턴
 	public boolean nextPage(int pageNumber, int bunch, String option, String word, String startDate, String endDate) {
 		if (word == null){
 			if ((getTotal() - (pageNumber-1) * bunch) > 0)
@@ -282,6 +265,7 @@ public class BbsDAO {
 		}
 	}
 	
+	// BBSID가 일치하는 게시글 리턴
 	public Bbs getBbs(int bbsID) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -319,6 +303,7 @@ public class BbsDAO {
 		return bbs;
 	}
 	
+	// 게시글 수정 후 실행 결과값 리턴
 	public int update(int bbsID, String bbsTitle, String bbsContent) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -346,6 +331,7 @@ public class BbsDAO {
 		return result;
 	}
 	
+	// 게시글 삭제 후 실행 결과값 리턴
 	public int delete(int bbsID) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
