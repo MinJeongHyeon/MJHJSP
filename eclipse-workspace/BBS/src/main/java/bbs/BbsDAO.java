@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import jdbc.Jdbc;
@@ -356,4 +358,42 @@ public class BbsDAO {
 		}
 		return result;
 	}
+	
+	public ArrayList<Bbs> sort(ArrayList<Bbs> list, int num) {
+		if (num == 1)
+			Collections.sort(list, new compareTitle());
+		if (num == 2)
+			Collections.sort(list, new compareTitle().reversed());
+		if (num == 3)
+			Collections.sort(list, new compareID());
+		if (num == 4)
+			Collections.sort(list, new compareID().reversed());
+		if (num == 5)
+			Collections.sort(list, new compareDate());
+		if (num == 6)
+			Collections.sort(list, new compareDate().reversed());
+		return list;
+	}
+ }
+
+class compareTitle implements Comparator<Bbs>{
+	@Override
+	public int compare(Bbs a,Bbs b){
+		return a.getBbsTitle().compareTo(b.getBbsTitle());
+	}
 }
+
+class compareID implements Comparator<Bbs>{
+	@Override
+	public int compare(Bbs a,Bbs b){
+		return a.getUserID().compareTo(b.getUserID());
+	}
+}
+
+class compareDate implements Comparator<Bbs>{
+	@Override
+	public int compare(Bbs a,Bbs b){
+		return a.getBbsDate().compareTo(b.getBbsDate());
+	}
+}
+

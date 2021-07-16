@@ -25,8 +25,10 @@ a, a:hover {
 <title>JSP 게시판 웹 사이트</title>
 </head>
 <body>
-<% /*변수 초기화*/ String userID = null; int i=0; 
+<% /*변수 초기화*/ 
+int i=0; 
 ArrayList<Bbs> list = null; 
+String userID = null; 
 if (session.getAttribute("userID") != null) {
 	userID = (String)session.getAttribute("userID");
 }
@@ -57,6 +59,10 @@ if (request.getParameter("startDate") != null) {
 String endDate= new SimpleDateFormat("YY.MM.dd").format(new Date());
 if (request.getParameter("endDate") != null) {
 	endDate = request.getParameter("endDate");
+}
+int sortNumber = 0;
+if (request.getParameter("sortNumber") != null) {
+	sortNumber = Integer.parseInt(request.getParameter("sortNumber"));
 }
 int start = (pageNumber-1) / 5 + 1;
 int end = start * 5;
@@ -111,6 +117,13 @@ function applyDate(option, optionValue){
 function bunchView(bunch){
 	$('#bunch').val(bunch.getAttribute('class'));
 	$('#pageNumber').val("1");
+	document.getElementById('viewForm').submit();
+	return false;
+}
+
+// 정렬 버튼
+function sort(num){
+	$('#sortNumber').val(num);
 	document.getElementById('viewForm').submit();
 	return false;
 }
@@ -208,7 +221,8 @@ $(document).ready(function () {
 	<div class="row">
 	
 		<!-- 게시글 검색 폼 -->
-		<form class="navbar-form pull-right" role="search" id="viewForm" onsubmit="return check()">
+		<form class="navbar-form pull-right" 
+		role="search" id="viewForm" onsubmit="return check()">
 		
 			<!-- Parameter -->
 			<input type="hidden" name="pageNumber" id="pageNumber" value="<%=pageNumber%>" />
@@ -219,7 +233,8 @@ $(document).ready(function () {
 			<input type="hidden" name="endDate" id="endDateValue" value="<%=endDate%>" />
 			<input type="hidden" name="searchWord" id="searchWord" 
 			<%if (searchWord != null) { %>
-			value="<%=searchWord%>" /> <%} %>
+			value="<%=searchWord%>" <%} %> />
+			<input type="hidden" name="sortNumber" id="sortNumber" value="<%=sortNumber%>" />
 			
 			<table> <!-- 검색 테이블 -->
 			
@@ -300,9 +315,27 @@ $(document).ready(function () {
 			<thead>
 				<tr>
 					<th style="background-color: #eeeeee; text-align: center; width: 50px;">번호</th>
-					<th style="background-color: #eeeeee; text-align: center;">제목</th>
-					<th style="background-color: #eeeeee; text-align: center; width: 80px;">작성자</th>
-					<th style="background-color: #eeeeee; text-align: center; width: 250px;">작성일자</th>
+					<th style="background-color: #eeeeee; text-align: center;">제목
+					<% if(sortNumber == 1) {%>
+						<a onClick="javascript:sort(2)"><span class="glyphicon glyphicon-chevron-up"></span></a>
+					<% } else {%>
+						<a onClick="javascript:sort(1)"><span class="glyphicon glyphicon-chevron-down"></span></a>
+					<%} %>
+					</th>
+					<th style="background-color: #eeeeee; text-align: center; width: 80px;">작성자
+					<% if(sortNumber == 3) {%>
+						<a onClick="javascript:sort(4)"><span class="glyphicon glyphicon-chevron-up"></span></a>
+					<% } else {%>
+						<a onClick="javascript:sort(3)"><span class="glyphicon glyphicon-chevron-down"></span></a>
+					<%} %>
+					</th>
+					<th style="background-color: #eeeeee; text-align: center; width: 250px;">작성일자
+					<% if(sortNumber == 5) {%>
+						<a onClick="javascript:sort(6)"><span class="glyphicon glyphicon-chevron-up"></span></a>
+					<% } else {%>
+						<a onClick="javascript:sort(5)"><span class="glyphicon glyphicon-chevron-down"></span></a>
+					<%} %>
+					</th>
 				</tr>
 			</thead>
 			
@@ -314,7 +347,7 @@ $(document).ready(function () {
 					list = bbsDAO.getList(pageNumber, bunch);
 					else // 검색했을 경우 파라미터에 따라 출력
 					list = bbsDAO.getList(searchOption, searchWord, pageNumber, bunch, startDate, endDate);
-					
+					list = bbsDAO.sort(list, sortNumber);
 					for(int n = 0; n < list.size(); n++) {// for문으로 게시글 출력 (n개씩 보기)%>
 					<tr>
 						<td><%= list.get(n).getBbsID() %></td>
@@ -336,22 +369,17 @@ $(document).ready(function () {
 				if(i==pageNumber) { // 현재 페이지는 다른 css 적용%>
 					<a onClick="javascript:currentPage(this)" class="btn btn-info"><%=i%></a>
 				<%} else {%>
-					<a onClick="javascript:currentPage(this)"class="btn btn-light"><%=i%></a>
-				<%}
-			}
-		} 
+					<a onClick="javascript:currentPage(this)"class="btn btn-light"><%=i%></a><%}}} 
 		
 		// 5n 페이지의 다음 페이지가 존재하면 다음 버튼 활성화
 		if(bbsDAO.nextPage(end + 1, bunch, searchOption, searchWord, startDate, endDate)) {%>
 			<a onClick="javascript:nextPage()" class="btn btn-success btn-arrow-right">&gt;</a> 
 			<% if(searchWord != null) {%>
-				<a onClick="javascript:endPage('<%=bbsDAO.getTotal
-				(searchOption, searchWord, startDate, endDate) %>')"
-				class="btn btn-success btn-arrow-right">&gt;&gt;</a>
-			<%} else { %>
-		<a onClick="javascript:endPage('<%=bbsDAO.getTotal() %>')"
-			class="btn btn-success btn-arrow-right">&gt;&gt;</a>
-		<%}} %>
+				<a onClick="javascript:endPage('<%=bbsDAO.getTotal(
+						searchOption, searchWord, startDate, endDate) 
+				%>')"class="btn btn-success btn-arrow-right">&gt;&gt;</a><%} 
+			else { %><a onClick="javascript:endPage('<%=bbsDAO.getTotal() %>')"
+			class="btn btn-success btn-arrow-right">&gt;&gt;</a><%}} %>
 		<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
 	</div>
 </div>
